@@ -1,12 +1,12 @@
 import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
+import jwt from "jsonwebtoken";
 
 async function register(req, res) {
     try {
         const { firstName, lastName, email, phoneNumber, password, role, status } = req.body;
 
-        // 1. check user exists
         const [existing] = await db.query(
             "SELECT * FROM users WHERE email = ?",
             [email]
@@ -16,12 +16,11 @@ async function register(req, res) {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        // 2. hash password
         const hashPassword = await bcrypt.hash(password, 10);
 
         const userId = uuidv4();
 
-        // 3. insert user
+
         await db.query(
             `INSERT INTO users 
             (user_id, first_name, last_name, email, phone_number, password_hash, role, status)
@@ -50,6 +49,63 @@ async function register(req, res) {
         });
     }
 }
+
+
+
+
+
+
+
+async function login(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        // 1. Find user
+        const [rows] = await db.query(
+            "SELECT * FROM users WHERE email = ?",
+            [email]
+        );
+
+        if (rows.length === 0) {
+            return res.status(400).json({
+                message: "User does not exist"
+            });
+        }
+
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+
+        if (!isMatch) {
+            return res.status(401).json({
+                message: "Email or password is incorrect"
+            });
+        }
+
+
+        const token = jwt.sign(
+            {
+                id: user.user_id,
+                email: user.email,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+
+        return res.status(200).json({
+            message: "User login successfully",
+            token
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "server error",
+            error: err.message
+        });
+    }
+}
+
 
 
 async function getUserDetails(req, res) {
@@ -138,7 +194,8 @@ async function deleteUser(req, res) {
     }
 }
 
-import db from "../config/db.js";
+
+
 
 async function getUserById(req, res) {
     try {
