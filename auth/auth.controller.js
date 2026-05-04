@@ -238,4 +238,4 @@ async function getUserById(req, res) {
 
 
 
-export default { register, getUserDetails, updateUser, deleteUser,getUserById };
+export default { register, getUserDetails, updateUser, deleteUser,getUserById ,login};
