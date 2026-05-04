@@ -1,0 +1,23 @@
+{
+  "name": "maxlight_cinemas_sql",
+  "version": "1.0.0",
+  "description": "max light cinema with sql",
+  "license": "ISC",
+  "author": "Dinuja Nimansith",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.22.3",
+    "nodemon": "^3.1.14",
+    "uuid": "^14.0.0"
+  }
+}
