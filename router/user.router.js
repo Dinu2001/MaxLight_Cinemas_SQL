@@ -8,7 +8,7 @@ import authController from "../auth/auth.controller.js";
 const router = express.Router();
 
 
-router.post('/',authController.register);
+router.post('/register',authController.register);
 router.post('/login',authController.login);
 router.get('/', authController.getUserDetails)
 router.get('/:id',authController.getUserById)

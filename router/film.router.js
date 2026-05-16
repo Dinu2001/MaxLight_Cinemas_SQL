@@ -4,9 +4,9 @@ import filmController from "../controller/film.controller.js";
 
 const router = express.Router();
 
-
+``
 router.post('/', filmController.saveFilm)
-router.get('/', filmController.getAllFilms)
+router.get('/get-all-film', filmController.getAllFilms)
 router.get('/:id', filmController.getFilmById)
 router.put('/:id', filmController.updateFilm)
 router.delete('/:id', filmController.deleteFilm)

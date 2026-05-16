@@ -1,6 +1,7 @@
 
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import filmRouter from "./router/film.router.js";
 import screenRouter from "./router/screen.router.js";
 import seatRouter from "./router/seat.router.js";
@@ -10,6 +11,7 @@ import reviewRouter from "./router/review.router.js";
 
 const app = express()
 app.use(express.json())
+app.use(cors());
 dotenv.config()
 
 
