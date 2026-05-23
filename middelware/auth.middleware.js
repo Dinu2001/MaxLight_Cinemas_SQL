@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-function verifyToken(req, res, next) {
+ export function verifyToken(req, res, next) {
     try {
         // 1. Get token from header
         const authHeader = req.headers.authorization;
@@ -37,4 +37,48 @@ function verifyToken(req, res, next) {
     }
 }
 
-export default verifyToken;
+
+
+
+export const authorizeRoles = (...allowedRoles) => {
+    return (req, res, next) => {
+        try {
+            // 1. Check if user data exists
+            if (!req.user) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized. Please login first."
+                });
+            }
+
+            // 2. Check if user role exists
+            if (!req.user.role) {
+                return res.status(403).json({
+                    success: false,
+                    message: "User role not found."
+                });
+            }
+
+            // 3. Check if user's role is allowed
+            if (!allowedRoles.includes(req.user.role)) {
+                return res.status(403).json({
+                    success: false,
+                    message: `Access denied. Allowed roles: ${allowedRoles.join(", ")}`
+                });
+            }
+
+            // 4. Role is authorized
+            next();
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: "Authorization error.",
+                error: error.message
+            });
+        }
+    };
+};
+
+
+
