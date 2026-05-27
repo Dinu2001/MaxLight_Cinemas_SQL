@@ -9,6 +9,7 @@ import showtimeRouter from "./router/showtime.router.js";
 import userRouter from "./router/user.router.js";
 import reviewRouter from "./router/review.router.js";
 import bookingRouter from "./router/booking.router.js";
+import bookingSeatRouter from "./router/bookedSeat.router.js";
 
 const app = express()
 app.use(express.json())
@@ -36,6 +37,7 @@ app.use("/seat",seatRouter)
 app.use("/showtime",showtimeRouter)
 app.use("/user",userRouter)
 app.use("/booking",bookingRouter)
+app.use("/book-seat",bookingSeatRouter)
 
 
 app.use("/review",reviewRouter)

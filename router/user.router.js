@@ -17,4 +17,8 @@ router.put('/:id',verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authControl
 router.delete('/:id',verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authController.deleteUser)
 
 
+router.get('/booking/:id',authController.getUserBookings)
+
+
+
 export default router;

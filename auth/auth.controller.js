@@ -209,5 +209,97 @@ async function getUserById(req, res) {
 
 
 
+export async function getUserBookings(req, res) {
+    try {
+        // Read the user ID directly from the URL path variable (:id)
+        const { id: userId } = req.params;
 
-export default { register, getUserDetails, updateUser, deleteUser,getUserById ,login};
+        // Guard clause validation
+        if (!userId || userId === "undefined" || userId === "null") {
+            return res.status(400).json({
+                success: false,
+                message: "Identification context missing or invalid in request URL path parameters."
+            });
+        }
+
+        // Fetch user transaction footprint based on the passed user_id parameter
+        // Replacing f.poster_url with NULL to prevent the "Unknown column" database exception
+        const [rows] = await db.query(
+            `
+            SELECT 
+                b.booking_id,
+                b.booking_date,
+                b.total_seats,
+                b.status,
+                s.show_date,
+                s.start_time,
+                f.film_name,
+                NULL AS poster_url,
+                sc.screen_name,
+                st.row_label,
+                st.seat_number
+            FROM booking b
+            INNER JOIN showtime s ON b.showtime_id = s.showtime_id
+            INNER JOIN film f ON s.film_id = f.film_id
+            INNER JOIN screen sc ON s.screen_id = sc.screen_id
+            LEFT JOIN booking_seat bs ON b.booking_id = bs.booking_id
+            LEFT JOIN seat st ON bs.seat_id = st.seat_id
+            WHERE b.user_id = ? AND b.status != 'CANCELLED'
+            ORDER BY b.booking_date DESC
+            `,
+            [userId]
+        );
+
+        // Group individual seat rows into single historical ticket blocks
+        const bookingsMap = {};
+
+        for (const row of rows) {
+            if (!bookingsMap[row.booking_id]) {
+                bookingsMap[row.booking_id] = {
+                    id: row.booking_id,
+                    movieTitle: row.film_name,
+                    moviePoster: row.poster_url, // This will cleanly be null now
+                    date: new Date(row.show_date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    }),
+                    time: row.start_time,
+                    theaterName: row.screen_name,
+                    status: row.status,
+                    seats: []
+                };
+            }
+            // Append mapped strings like "A1", "A2" to the seats array configuration
+            if (row.row_label && row.seat_number) {
+                bookingsMap[row.booking_id].seats.push(`${row.row_label}${row.seat_number}`);
+            }
+        }
+
+        // Transform the object dictionary map collection back into a flat array payload
+        const processedBookings = Object.values(bookingsMap);
+
+        return res.status(200).json({
+            success: true,
+            count: processedBookings.length,
+            userId,
+            data: processedBookings
+        });
+
+    } catch (error) {
+        console.error("Error encountered executing getUserBookings:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed reading personal receipt repository collections.",
+            error: error.message
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+export default { register, getUserDetails, updateUser, deleteUser,getUserById ,login,getUserBookings};
