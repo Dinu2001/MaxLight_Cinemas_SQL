@@ -10,6 +10,7 @@ import userRouter from "./router/user.router.js";
 import reviewRouter from "./router/review.router.js";
 import bookingRouter from "./router/booking.router.js";
 import bookingSeatRouter from "./router/bookedSeat.router.js";
+import paymentRouter from "./router/payment.router.js";
 
 const app = express()
 app.use(express.json())
@@ -41,6 +42,7 @@ app.use("/book-seat",bookingSeatRouter)
 
 
 app.use("/review",reviewRouter)
+app.use("/payment",paymentRouter)
 
 
 
