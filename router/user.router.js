@@ -11,10 +11,10 @@ const router = express.Router();
 
 router.post('/register',authController.register);
 router.post('/login',authController.login);
-router.get('/' ,verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authController.getUserDetails)
-router.get('/:id',verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authController.getUserById)
-router.put('/:id',verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authController.updateUser)
-router.delete('/:id',verifyToken,authorizeRoles("USER","ADMIN","STAFF"),authController.deleteUser)
+router.get('/' ,authController.getUserDetails)
+router.get('/get-by-id/:id',authController.getUserById)
+router.put('/update/:id',authController.updateUser)
+router.delete('/delete/:id',authController.deleteUser)
 
 
 router.get('/booking/:id',authController.getUserBookings)

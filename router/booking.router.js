@@ -6,11 +6,11 @@ import bookingController from "../controller/booking.controller.js";
 const router = express.Router();
 
 ``
-router.post('/', bookingController.createBooking)
-router.get('/', bookingController.getAllBookings)
+router.post('/save', bookingController.createBooking)
+router.get('/get', bookingController.getAllBookings)
 router.get('/:id', bookingController.getBookingById)
-router.put('/:id',bookingController.updateBooking)
-router.delete('/:id', bookingController.deleteBooking)
+router.put('/update/:id',bookingController.updateBooking)
+router.delete('/delete/:id', bookingController.deleteBooking)
 
 
 

@@ -97,6 +97,65 @@ async function getFilmById(req, res) {
 }
 
 
+
+
+
+async function getFilmByName(req, res) {
+    try {
+        const filmName = req.params.name;
+
+        const [rows] = await db.query(
+            "SELECT * FROM film WHERE film_name LIKE ?",
+            [`%${filmName}%`]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                message: "No films found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Films fetched successfully",
+            data: rows
+        });
+
+    } catch (e) {
+        return res.status(500).json({
+            message: "Server error",
+            error: e.message
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function updateFilm(req, res) {
     try {
         const id = req.params.id
@@ -195,4 +254,4 @@ async function deleteFilm(req, res) {
     }
 }
 
-export default {saveFilm, updateFilm, deleteFilm,getAllFilms,getFilmById}
+export default {saveFilm, updateFilm, deleteFilm,getAllFilms,getFilmById,getFilmByName}
