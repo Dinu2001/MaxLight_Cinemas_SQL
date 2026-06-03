@@ -151,4 +151,35 @@ async function deleteScreen(req, res) {
     }
 }
 
-export default {createScreen,getAllScreens,getScreenById,updateScreen,deleteScreen};
+
+
+
+async function getScreenByName(req, res) {
+    try {
+        const screenName = req.params.screenName;
+
+        const [rows] = await db.query(
+            "SELECT * FROM screen WHERE screen_name = ?",
+            [screenName]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                message: "Screen not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Screen fetched successfully",
+            data: rows[0]
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "server error",
+            error: err.message
+        });
+    }
+}
+
+export default {createScreen,getAllScreens,getScreenById,updateScreen,deleteScreen,getScreenByName};

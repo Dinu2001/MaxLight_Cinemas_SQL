@@ -1,5 +1,87 @@
 import db from '../config/db.js'
 
+
+
+
+
+
+
+// 1. Fetch only online/active showtimes for the user frontend
+async function getAllShowtimes(req, res) {
+    try {
+        const [rows] = await db.query(`
+            SELECT st.*, 
+                   f.film_name, 
+                   sc.screen_name
+            FROM showtime st
+            JOIN film f ON st.film_id = f.film_id
+            JOIN screen sc ON st.screen_id = sc.screen_id
+            WHERE st.status = 'ACTIVE'
+        `);
+
+        return res.status(200).json({
+            message: "Active showtimes fetched successfully",
+            data: rows
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "server error",
+            error: err.message
+        });
+    }
+}
+
+// 2. Fetch active showtimes filtering by specific Film
+async function getShowtimesByFilm(req, res) {
+    try {
+        const filmId = req.params.filmId;
+
+        const [rows] = await db.query(`
+            SELECT st.*, sc.screen_name
+            FROM showtime st
+            JOIN screen sc ON st.screen_id = sc.screen_id
+            WHERE st.film_id = ? AND st.status = 'ACTIVE'
+        `, [filmId]);
+
+        return res.status(200).json({
+            message: "Active film showtimes fetched successfully",
+            data: rows
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "server error",
+            error: err.message
+        });
+    }
+}
+
+// 3. Fetch active showtimes filtering by Screen
+async function getShowtimesByScreen(req, res) {
+    try {
+        const screenId = req.params.screenId;
+
+        const [rows] = await db.query(`
+            SELECT st.*, f.film_name
+            FROM showtime st
+            JOIN film f ON st.film_id = f.film_id
+            WHERE st.screen_id = ? AND st.status = 'ACTIVE'
+        `, [screenId]);
+
+        return res.status(200).json({
+            message: "Active screen showtimes fetched successfully",
+            data: rows
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "server error",
+            error: err.message
+        });
+    }
+}
+
 async function createShowtime(req, res) {
     try {
         const { filmId, screenId, showDate, startTime, endTime } = req.body;
@@ -25,8 +107,8 @@ async function createShowtime(req, res) {
 
         const sql = `
             INSERT INTO showtime
-            (showtime_id, film_id, screen_id, show_date, start_time, end_time)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (showtime_id, film_id, screen_id, show_date, start_time, end_time, status)
+            VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE')
         `;
 
         await db.query(sql, [
@@ -51,30 +133,6 @@ async function createShowtime(req, res) {
     }
 }
 
-
-async function getAllShowtimes(req, res) {
-    try {
-        const [rows] = await db.query(`
-            SELECT st.*, 
-                   f.film_name, 
-                   sc.screen_name
-            FROM showtime st
-            JOIN film f ON st.film_id = f.film_id
-            JOIN screen sc ON st.screen_id = sc.screen_id
-        `);
-
-        return res.status(200).json({
-            message: "Showtimes fetched successfully",
-            data: rows
-        });
-
-    } catch (err) {
-        return res.status(500).json({
-            message: "server error",
-            error: err.message
-        });
-    }
-}
 
 
 
@@ -110,54 +168,9 @@ async function getShowtimeById(req, res) {
 }
 
 
-async function getShowtimesByFilm(req, res) {
-    try {
-        const filmId = req.params.filmId;
-
-        const [rows] = await db.query(`
-            SELECT st.*, sc.screen_name
-            FROM showtime st
-            JOIN screen sc ON st.screen_id = sc.screen_id
-            WHERE st.film_id = ?
-        `, [filmId]);
-
-        return res.status(200).json({
-            message: "Film showtimes fetched successfully",
-            data: rows
-        });
-
-    } catch (err) {
-        return res.status(500).json({
-            message: "server error",
-            error: err.message
-        });
-    }
-}
 
 
-async function getShowtimesByScreen(req, res) {
-    try {
-        const screenId = req.params.screenId;
 
-        const [rows] = await db.query(`
-            SELECT st.*, f.film_name
-            FROM showtime st
-            JOIN film f ON st.film_id = f.film_id
-            WHERE st.screen_id = ?
-        `, [screenId]);
-
-        return res.status(200).json({
-            message: "Screen showtimes fetched successfully",
-            data: rows
-        });
-
-    } catch (err) {
-        return res.status(500).json({
-            message: "server error",
-            error: err.message
-        });
-    }
-}
 
 async function updateShowtime(req, res) {
     try {
@@ -198,36 +211,80 @@ async function updateShowtime(req, res) {
     }
 }
 
+// async function deleteShowtime(req, res) {
+//     try {
+//         const id = req.params.id;
+//
+//         const [check] = await db.query(
+//             "SELECT * FROM showtime WHERE showtime_id = ?",
+//             [id]
+//         );
+//
+//         if (check.length === 0) {
+//             return res.status(404).json({
+//                 message: "Showtime not found"
+//             });
+//         }
+//
+//         await db.query(
+//             "DELETE FROM showtime WHERE showtime_id = ?",
+//             [id]
+//         );
+//
+//         return res.status(200).json({
+//             message: "Showtime deleted successfully"
+//         });
+//
+//     } catch (err) {
+//         return res.status(500).json({
+//             message: "server error",
+//             error: err.message
+//         });
+//     }
+// }
+
+
+
+
 async function deleteShowtime(req, res) {
     try {
         const id = req.params.id;
 
-        const [check] = await db.query(
-            "SELECT * FROM showtime WHERE showtime_id = ?",
-            [id]
-        );
-
-        if (check.length === 0) {
-            return res.status(404).json({
-                message: "Showtime not found"
-            });
-        }
-
         await db.query(
-            "DELETE FROM showtime WHERE showtime_id = ?",
+            "UPDATE showtime SET status='INACTIVE' WHERE showtime_id=?",
             [id]
         );
 
-        return res.status(200).json({
-            message: "Showtime deleted successfully"
+        res.status(200).json({
+            message: "Showtime deactivated successfully"
         });
 
     } catch (err) {
-        return res.status(500).json({
-            message: "server error",
-            error: err.message
+        res.status(500).json({
+            message: err.message
         });
     }
 }
 
-export default {createShowtime,getAllShowtimes,getShowtimesByFilm,getShowtimesByScreen,getShowtimeById,updateShowtime,deleteShowtime}
+
+
+
+
+async function getAdminShowtimeLogs(req, res) {
+    try {
+        const [rows] = await db.query(`
+            SELECT st.*, f.film_name, sc.screen_name
+            FROM showtime st
+            JOIN film f ON st.film_id = f.film_id
+            JOIN screen sc ON st.screen_id = sc.screen_id
+            ORDER BY st.show_date DESC
+        `);
+        return res.status(200).json({ data: rows });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+
+
+export default {createShowtime,getAllShowtimes,getShowtimesByFilm,getShowtimesByScreen,getShowtimeById,updateShowtime,deleteShowtime,getAdminShowtimeLogs}

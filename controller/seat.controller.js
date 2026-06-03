@@ -82,7 +82,7 @@ async function getAllSeats(req, res) {
 
 async function getSeatsByScreen(req, res) {
     try {
-        const screenId = req.params.screenId;
+        const screenId = req.params.id;
 
         const [rows] = await db.query(
             "SELECT * FROM seat WHERE screen_id = ? ORDER BY row_label, seat_number",

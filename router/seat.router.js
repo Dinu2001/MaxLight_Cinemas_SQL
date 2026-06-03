@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/', seatController.createSeats);
 router.get('/', seatController.getAllSeats)
-router.get('/:id', seatController.getSeatsByScreen)
+router.get('/screen/:id', seatController.getSeatsByScreen)
 router.put('/:id', seatController.updateSeat)
 router.delete('/:id',seatController.deleteSeat)
 

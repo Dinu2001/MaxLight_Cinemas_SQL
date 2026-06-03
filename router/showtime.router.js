@@ -14,4 +14,7 @@ router.get('/screen/:screenId', showtimeController.getShowtimesByScreen)
 router.put('/update/:id', showtimeController.updateShowtime)
 router.delete('/delete/:id', showtimeController.deleteShowtime)
 
+
+router.get('/admin/all', showtimeController.getAdminShowtimeLogs);
+
 export default router

@@ -12,5 +12,7 @@ router.get('/:id', screenController.getScreenById)
 router.put('/:id', screenController.updateScreen)
 router.delete('/:id',screenController.deleteScreen)
 
+router.get("/name/:screenName", screenController.getScreenByName);
+
 
 export default router;
