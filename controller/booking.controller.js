@@ -2,6 +2,7 @@ import db from "../config/db.js"; // mysql2 pool connection
 import { v4 as uuidv4 } from "uuid";
 
 async function createBooking(req, res) {
+    console.log(req.body)
     try {
         const { userId, showtimeId, seats } = req.body;
 
