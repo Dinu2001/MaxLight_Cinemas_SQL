@@ -103,6 +103,41 @@ async function getSeatsByScreen(req, res) {
 }
 
 
+// async function updateSeat(req, res) {
+//     try {
+//         const id = req.params.id;
+//         const { row_label, seat_number, seat_type } = req.body;
+//
+//         const [check] = await db.query(
+//             "SELECT * FROM seat WHERE seat_id = ?",
+//             [id]
+//         );
+//
+//         if (check.length === 0) {
+//             return res.status(404).json({
+//                 message: "Seat not found"
+//             });
+//         }
+//
+//         await db.query(
+//             `UPDATE seat
+//              SET row_label = ?, seat_number = ?, seat_type = ?
+//              WHERE seat_id = ?`,
+//             [row_label, seat_number, seat_type, id]
+//         );
+//
+//         return res.status(200).json({
+//             message: "Seat updated successfully"
+//         });
+//
+//     } catch (err) {
+//         return res.status(500).json({
+//             message: "server error",
+//             error: err.message
+//         });
+//     }
+// }
+
 async function updateSeat(req, res) {
     try {
         const id = req.params.id;
@@ -119,11 +154,18 @@ async function updateSeat(req, res) {
             });
         }
 
+        const seat = check[0];
+
         await db.query(
-            `UPDATE seat 
+            `UPDATE seat
              SET row_label = ?, seat_number = ?, seat_type = ?
              WHERE seat_id = ?`,
-            [row_label, seat_number, seat_type, id]
+            [
+                row_label ?? seat.row_label,
+                seat_number ?? seat.seat_number,
+                seat_type ?? seat.seat_type,
+                id
+            ]
         );
 
         return res.status(200).json({
@@ -132,11 +174,27 @@ async function updateSeat(req, res) {
 
     } catch (err) {
         return res.status(500).json({
-            message: "server error",
+            message: "Server error",
             error: err.message
         });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function deleteSeat(req, res) {
     try {

@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/', screenController.createScreen)
 router.get('/', screenController.getAllScreens)
 router.get('/:id', screenController.getScreenById)
-router.put('/:id', screenController.updateScreen)
+router.put('/update/:id', screenController.updateScreen)
 router.delete('/:id',screenController.deleteScreen)
 
 router.get("/name/:screenName", screenController.getScreenByName);
