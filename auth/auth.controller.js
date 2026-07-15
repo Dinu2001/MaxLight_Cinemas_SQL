@@ -79,7 +79,7 @@ async function login(req, res) {
                 role: user.role
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "30m" }
         );
         return res.status(200).json({
             message: "User login successfully",
@@ -301,5 +301,34 @@ export async function getUserBookings(req, res) {
 
 
 
+async function getMe(req, res) {
+    try {
 
-export default { register, getUserDetails, updateUser, deleteUser,getUserById ,login,getUserBookings};
+        return res.status(200).json({
+            success: true,
+            user: {
+                id: req.user.id,
+                email: req.user.email,
+                role: req.user.role
+            }
+        });
+
+    } catch(error) {
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+            error: error.message
+        });
+
+    }
+}
+
+
+
+
+
+
+
+
+export default { register, getUserDetails, updateUser, deleteUser,getUserById ,login,getUserBookings,getMe};

@@ -18,7 +18,7 @@ app.use(cors());
 dotenv.config()
 
 
-const port = process.env.PORT || 5001
+const port = process.env.PORT || 5000
 
 
 async function checkDBConnection() {
@@ -45,6 +45,11 @@ app.use("/review",reviewRouter)
 app.use("/payment",paymentRouter)
 
 
+
+
+app.get("/test", (req, res) => {
+    res.send("Server is working");
+});
 
 
 

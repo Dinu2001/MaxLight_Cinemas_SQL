@@ -1,12 +1,13 @@
 import express from "express";
 import filmController from "../controller/film.controller.js";
 import bookingController from "../controller/booking.controller.js";
+import {verifyToken} from "../middelware/auth.middleware.js";
 
 
 const router = express.Router();
 
 ``
-router.post('/save', bookingController.createBooking)
+router.post('/save',verifyToken, bookingController.createBooking)
 router.get('/get', bookingController.getAllBookings)
 router.get('/:id', bookingController.getBookingById)
 router.put('/update/:id',bookingController.updateBooking)

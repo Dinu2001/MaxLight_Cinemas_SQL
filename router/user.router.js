@@ -11,13 +11,19 @@ const router = express.Router();
 
 router.post('/register',authController.register);
 router.post('/login',authController.login);
-router.get('/' ,authController.getUserDetails)
-router.get('/get-by-id/:id',authController.getUserById)
-router.put('/update/:id',authController.updateUser)
-router.delete('/delete/:id',authController.deleteUser)
+router.get('/' ,verifyToken,authController.getUserDetails)
+router.get('/get-by-id/:id',verifyToken,authController.getUserById)
+router.put('/update/:id',verifyToken,authController.updateUser)
+router.delete('/delete/:id',verifyToken,authController.deleteUser)
 
 
-router.get('/booking/:id',authController.getUserBookings)
+router.get('/booking/:id',verifyToken,authController.getUserBookings)
+
+
+
+
+router.get("/me", verifyToken, authController.getMe);
+
 
 
 

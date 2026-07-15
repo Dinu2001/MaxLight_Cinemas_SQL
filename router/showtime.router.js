@@ -1,11 +1,12 @@
 import express from 'express'
 import showtimeController from '../controller/showtime.controller.js'
+import {verifyToken} from "../middelware/auth.middleware.js";
 
 const router = express.Router()
 
 router.post('/save', showtimeController.createShowtime)
 
-router.get('/', showtimeController.getAllShowtimes)
+router.get('/' ,showtimeController.getAllShowtimes)
 router.get('/:id', showtimeController.getShowtimeById)
 
 router.get('/film/:filmId', showtimeController.getShowtimesByFilm)
