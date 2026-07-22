@@ -79,7 +79,7 @@ async function login(req, res) {
                 role: user.role
             },
             process.env.JWT_SECRET,
-            { expiresIn: "30m" }
+            { expiresIn: "1d" }
         );
         return res.status(200).json({
             message: "User login successfully",

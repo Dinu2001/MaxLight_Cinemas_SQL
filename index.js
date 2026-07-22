@@ -1,7 +1,8 @@
-
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import db from "./config/db.js"; // <-- Import db here
+
 import filmRouter from "./router/film.router.js";
 import screenRouter from "./router/screen.router.js";
 import seatRouter from "./router/seat.router.js";
@@ -11,15 +12,15 @@ import reviewRouter from "./router/review.router.js";
 import bookingRouter from "./router/booking.router.js";
 import bookingSeatRouter from "./router/bookedSeat.router.js";
 import paymentRouter from "./router/payment.router.js";
+import analyticsRouter from "./router/analytics.router.js";
+
+dotenv.config()
 
 const app = express()
 app.use(express.json())
 app.use(cors());
-dotenv.config()
-
 
 const port = process.env.PORT || 5000
-
 
 async function checkDBConnection() {
     try {
@@ -30,30 +31,23 @@ async function checkDBConnection() {
     }
 }
 
+app.use("/film", filmRouter)
+app.use("/screen", screenRouter)
+app.use("/seat", seatRouter)
+app.use("/showtime", showtimeRouter)
+app.use("/user", userRouter)
+app.use("/booking", bookingRouter)
+app.use("/book-seat", bookingSeatRouter)
+app.use("/review", reviewRouter)
+app.use("/payment", paymentRouter)
 
-
-app.use("/film",filmRouter)
-app.use("/screen",screenRouter)
-app.use("/seat",seatRouter)
-app.use("/showtime",showtimeRouter)
-app.use("/user",userRouter)
-app.use("/booking",bookingRouter)
-app.use("/book-seat",bookingSeatRouter)
-
-
-app.use("/review",reviewRouter)
-app.use("/payment",paymentRouter)
-
-
-
+app.use("/api/analytics", analyticsRouter)
 
 app.get("/test", (req, res) => {
     res.send("Server is working");
 });
 
-
-
 app.listen(port, () => {
-     checkDBConnection;
+    checkDBConnection(); // <-- Added parentheses to execute function
     console.log(`Express server listening on port ${port}`)
 })
