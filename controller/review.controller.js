@@ -28,6 +28,49 @@ async function createReview(req, res) {
 }
 
 
+// async function getReviewByFilmId(req, res) {
+//     try {
+//         const filmId = req.params.id;
+//
+//         const [reviews] = await db.query(
+//             `SELECT
+//                 r.review_id,
+//                 r.description,
+//                 r.rating,
+//                 r.created_at,
+//                 u.user_id,
+//                 u.first_name,
+//                 u.last_name,
+//                 u.email,
+//                 f.film_id,
+//                 f.film_name
+//              FROM review r
+//              JOIN users u ON r.user_id = u.user_id
+//              JOIN film f ON r.film_id = f.film_id
+//              WHERE r.film_id = ?`,
+//             [filmId]
+//         );
+//
+//         if (reviews.length === 0) {
+//             return res.status(404).json({
+//                 message: "No reviews found for this film"
+//             });
+//         }
+//
+//         return res.status(200).json({
+//             message: "Reviews fetched successfully",
+//             data: reviews
+//         });
+//
+//     } catch (err) {
+//         return res.status(500).json({
+//             message: "server error",
+//             error: err.message
+//         });
+//     }
+// }
+
+
 async function getReviewByFilmId(req, res) {
     try {
         const filmId = req.params.id;
@@ -37,7 +80,6 @@ async function getReviewByFilmId(req, res) {
                 r.review_id,
                 r.description,
                 r.rating,
-                r.created_at,
                 u.user_id,
                 u.first_name,
                 u.last_name,

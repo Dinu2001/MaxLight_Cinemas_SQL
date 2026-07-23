@@ -9,7 +9,7 @@ import {verifyToken} from "../middelware/auth.middleware.js";
 const router = express.Router();
 
 
-router.post('/',verifyToken,reviewController.createReview);
+router.post('/',reviewController.createReview);
 router.get('/:id',reviewController.getReviewByFilmId)
 router.delete('/:id',reviewController.deleteReview)
 
